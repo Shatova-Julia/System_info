@@ -1,18 +1,21 @@
 import psutil as psu
+from main import Main
 
 
-class Disk:
-    @staticmethod
-    def get_disk():
-        return psu.disk_usage('/').percent
+class Disk(Main):
+    info = {}
+    template = '_' * 25 + '\n'
 
-    @staticmethod
-    def show_disk():
-        print("Диск: {0}%".format(psu.disk_usage('/').percent))
+    def get(self):
+        self.info.update(Active_time=psu.disk_usage('/').percent)
+
+    def _prepare(self):
+        for key, val in self.info.items():
+            self.template += str(key).replace('_', ' ') + ': ' + str(val) + '%\n'
+            self.template += '_' * 25 + '\n'
 
 
 if __name__ == '__main__':
     a = Disk()
-    a.show_disk()
-    b = a.get_disk()
-    print(b)
+    a.get()
+    a.show()

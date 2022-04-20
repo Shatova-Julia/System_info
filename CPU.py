@@ -1,19 +1,25 @@
 import psutil as psu
+from main import Main
 
 
-class Cpu:
-    @staticmethod
-    def get_cpu():
-        return psu.cpu_percent(1, 1)
+class Cpu(Main):
+    info = {}
+    template = '_' * 25 + '\n'
 
-    @staticmethod
-    def show_cpu():
-        for i, n_cpu in enumerate(psu.cpu_percent(1, 1)):
-            print("Процессор: {0}      Нагрузка: {1}%".format(i + 1, n_cpu))
+    def get(self):
+        self.info.update(Count=psu.cpu_count())
+        self.info.update(Persent=psu.cpu_percent(interval=1))
+        return self.info
+
+    def _prepare(self):
+        for key, val in self.info.items():
+            self.template += str(key) + ': ' + str(val) + ('%\n' if str(key) == 'Persent' else '\n')
+            self.template += '_' * 25 + '\n'
 
 
 if __name__ == '__main__':
     a = Cpu()
-    a.show_cpu()
-    b = a.get_cpu()
-    print(b)
+    a.get()
+    a.show()
+
+

@@ -1,25 +1,24 @@
 import psutil as psu
+from main import Main
 
 
-class Memory:
-    @staticmethod
-    def get_total_memory():
-        return round(psu.virtual_memory().total / (1024 ** 3), 2)
+class Memory(Main):
+    info = {}
+    template = '_' * 30 + '\n'
 
-    @staticmethod
-    def get_used_memory():
-        return round(psu.virtual_memory().used / (1024 ** 3), 2)
+    def get(self):
+        self.info.update(Virtual_memory_total=round(psu.virtual_memory().total / (1024 ** 3), 2))
+        self.info.update(Virtual_memory_used=round(psu.virtual_memory().used / (1024 ** 3), 2))
+        self.info.update(Swap_memory_total=round(psu.swap_memory().total / (1024 ** 3), 2))
+        self.info.update(Swap_memory_used=round(psu.swap_memory().used / (1024 ** 3), 2))
 
-    @staticmethod
-    def show_memory():
-        tot_mem = round(psu.virtual_memory().total / (1024 ** 3), 2)
-        use_mem = round(psu.virtual_memory().used / (1024 ** 3), 2)
-        print(f'Объем ОЗУ: {tot_mem} Gb / Используется {use_mem} Gb')
+    def _prepare(self):
+        for key, val in self.info.items():
+            self.template += str(key).replace('_', ' ') + ': ' + str(val) + 'Gb\n'
+            self.template += '_' * 30 + '\n'
 
 
 if __name__ == '__main__':
     a = Memory()
-    a.show_memory()
-    b = a.get_total_memory()
-    print(b)
-    
+    a.get()
+    a.show()

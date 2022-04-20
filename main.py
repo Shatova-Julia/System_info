@@ -1,20 +1,17 @@
-import Process
-import CPU
-import Memory
-import Swap
-import Disk
+from abc import abstractmethod
 
 
-def show_statistic():
-    CPU.Cpu().show_cpu()
-    print('_' * 50)
-    Memory.Memory().show_memory()
-    print('_' * 50)
-    Swap.Swap().show_swap()
-    print('_' * 50)
-    Disk.Disk().show_disk()
-    Process.Process().show_proc()
+class Main:
+    template = ''
 
+    @abstractmethod
+    def get(self):
+        pass
 
-if __name__ == '__main__':
-    show_statistic()
+    @abstractmethod
+    def _prepare(self):
+        pass
+
+    def show(self):
+        self._prepare()
+        print(self.template)

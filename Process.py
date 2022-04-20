@@ -1,40 +1,34 @@
 import psutil as psu
+from main import Main
 
 
-class Process:
+class Process(Main):
+    info = {}
+    template = '\n'
 
-    @staticmethod
-    def get_proc():
+    def get(self):
         pids = psu.pids()
-        dict_1 = {}
         for pid in pids:
             if psu.pid_exists(pid):
-                dict_1[pid] = [psu.Process(pid).name(),
-                               psu.Process(pid).status(),
-                               psu.Process(pid).memory_info().pagefile
-                               ]
-        return dict_1
+                self.info[pid] = [psu.Process(pid).name(),
+                                  psu.Process(pid).status(),
+                                  psu.Process(pid).memory_info().pagefile
+                                  ]
 
-    @staticmethod
-    def show_proc():
-        pids = psu.pids()
-        print("|{:-<28}| {:-<28}| {:-<28}| {:-<28}|".format('', '', '', ''))
-        print("|{:<28}| {:<28}| {:<28}| {:<28}|".format('PID',
-                                                        'Process name',
-                                                        'Status',
-                                                        'Pagefile').upper())
-        for pid in pids:
-            if psu.pid_exists(pid):
-                print("|{:-<28}| {:-<28}| {:-<28}| {:-<28}|".format('', '', '', ''))
+    def _prepare(self):
+        self.template += '|{:-<28}| {:-<28}| {:-<28}| {:-<28}|'.format('', '', '', '') + '\n'
+        self.template += '|{:<28}| {:<28}| {:<28}| {:<28}|'.format('PID',
+                                                                   'Process name',
+                                                                   'Status',
+                                                                   'Pagefile').upper() + '\n'
+        for pid, val in self.info.items():
+            self.template += '|{:-<28}| {:-<28}| {:-<28}| {:-<28}|'.format('', '', '', '') + '\n'
 
-                print("|{:<28}| {:<28}| {:<28}| {:<28}|".format(psu.Process(pid).pid,
-                                                                psu.Process(pid).name(),
-                                                                psu.Process(pid).status(),
-                                                                psu.Process(pid).memory_info().pagefile))
-        print("|{:-<28}| {:-<28}| {:-<28}| {:-<28}|".format('', '', '', ''))
+            self.template += '|{:<28}| {:<28}| {:<28}| {:<28}|'.format(pid, val[0], val[1], val[2]) + '\n'
+        self.template += '|{:-<28}| {:-<28}| {:-<28}| {:-<28}|'.format('', '', '', '') + '\n'
 
 
 if __name__ == '__main__':
     a = Process()
-    print(a.get_proc())
-    a.show_proc()
+    a.get()
+    a.show()
